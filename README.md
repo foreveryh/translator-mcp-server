@@ -111,7 +111,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 
 // 连接到MCP服务器
-const transport = new SSEClientTransport("http://localhost:3031");
+const transport = new SSEClientTransport("https://t.deeptoai.com/sse");
 const client = new Client(
   { name: "assistant-client", version: "1.0.0" },
   { capabilities: { tools: {} } }
@@ -143,7 +143,7 @@ console.log(result.content[0].text);
 {
   "mcpServers": {
     "airylark-translation": {
-      "url": "https://airylark-mcp.vcorp.ai/sse"
+      "url": "https://t.deeptoai.com/sse"
     }
   }
 }
@@ -156,7 +156,7 @@ console.log(result.content[0].text);
 1. 进入设置页面
 2. 找到"开发者设置"或"外部工具"选项
 3. 添加新的MCP服务器，填写名称与URL
-4. 服务器URL填写 `https://airylark-mcp.vcorp.ai/sse`
+4. 服务器URL填写 `https://t.deeptoai.com/sse`
 
 配置完成后，AI助手便可以使用"translate_text"和"evaluate_translation"工具，轻松处理各类专业文档翻译需求。
 
