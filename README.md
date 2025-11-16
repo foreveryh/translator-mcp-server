@@ -70,7 +70,7 @@ translator-mcp
       "args": ["-y", "translator-mcp-server"],
       "env": {
         "TRANSLATION_API_KEY": "your-api-key",
-        "TRANSLATION_MODEL": "glm-4-flash",
+        "TRANSLATION_MODEL": "glm-4-air",
         "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4"
       }
     }
@@ -104,7 +104,7 @@ npm start
 ```bash
 # 翻译 API 配置（必需）
 TRANSLATION_API_KEY=your_api_key          # API 密钥
-TRANSLATION_MODEL=glm-4-flash             # 模型名称
+TRANSLATION_MODEL=glm-4-air               # 模型名称
 TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4  # API 端点
 
 # 服务器配置（可选）
@@ -117,9 +117,15 @@ PORT=3031             # 服务器端口
 #### 智谱 AI（推荐）
 ```bash
 TRANSLATION_API_KEY=your-zhipu-key
-TRANSLATION_MODEL=glm-4-flash
+TRANSLATION_MODEL=glm-4-air
 TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4
 ```
+
+**智谱 AI 模型选择：**
+- `glm-4-air`：性价比最高，速度快，适合大多数场景（推荐）
+- `glm-4-plus`：质量最高，理解能力强，适合专业翻译
+- `glm-4-flash`：速度最快，成本最低，适合大量文本
+- `glm-4-0520`：稳定版本，适合生产环境
 
 #### OpenRouter
 ```bash
@@ -232,7 +238,7 @@ console.log(result.content[0].text);
       "args": ["-y", "translator-mcp-server"],
       "env": {
         "TRANSLATION_API_KEY": "your-key",
-        "TRANSLATION_MODEL": "glm-4-flash",
+        "TRANSLATION_MODEL": "glm-4-air",
         "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4",
         "MODE": "stdio"
       }
@@ -257,7 +263,7 @@ console.log(result.content[0].text);
       "args": ["-y", "translator-mcp-server"],
       "env": {
         "TRANSLATION_API_KEY": "your-key",
-        "TRANSLATION_MODEL": "glm-4-flash",
+        "TRANSLATION_MODEL": "glm-4-air",
         "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4"
       }
     }
@@ -305,7 +311,7 @@ docker build -t translator-mcp-server .
 docker run -d \
   -p 3031:3031 \
   -e TRANSLATION_API_KEY=your-key \
-  -e TRANSLATION_MODEL=glm-4-flash \
+  -e TRANSLATION_MODEL=glm-4-air \
   -e TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4 \
   -e MODE=sse \
   --name translator-mcp \
@@ -389,7 +395,9 @@ console.log(result.content[0].text);
 三阶段翻译流程需要 3 次 API 调用，适合专业文档翻译。如需快速翻译：
 
 1. **使用简单模式**：设置 `high_quality: false`
-2. **选择更快的模型**：如 `glm-4-flash`
+2. **选择更快的模型**：
+   - `glm-4-flash`：速度最快
+   - `glm-4-air`：平衡速度和质量（推荐）
 3. **检查网络延迟**：测试到 API 端点的连接速度
 
 ## 贡献
