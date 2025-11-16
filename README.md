@@ -164,59 +164,57 @@ console.log(result.content[0].text);
 
 AiryLark MCP服务器支持多种部署和运行方式，以下是常用配置方法：
 
-### Docker部署
+### Docker 本地构建部署
 
-使用官方发布的Docker镜像是最简单的部署方式：
-
-```bash
-# 拉取官方镜像
-docker pull wizdy/airylark-mcp-server
-
-# 运行容器
-docker run -p 3031:3031 --env-file .env -d wizdy/airylark-mcp-server
-```
-
-### Docker Compose部署
-
-使用项目提供的docker-compose.yml文件，配合官方镜像可以更方便地管理服务：
-
-```yaml
-# docker-compose.yml 示例
-services:
-  mcp-server:
-    image: wizdy/airylark-mcp-server
-    ports:
-      - "${MCP_PORT}:${MCP_PORT}"
-    environment:
-      - NODE_ENV=production
-      - PORT=${MCP_PORT}
-      - TRANSLATION_API_KEY=${TRANSLATION_API_KEY}
-      - TRANSLATION_MODEL=${TRANSLATION_MODEL}
-      - TRANSLATION_BASE_URL=${TRANSLATION_BASE_URL}
-    restart: always
-```
-
-运行服务：
+使用 Docker 构建和运行 MCP 服务器：
 
 ```bash
-# 设置环境变量或创建.env文件
-export MCP_PORT=3031
-export TRANSLATION_API_KEY=your_api_key
-export TRANSLATION_MODEL=your_model_name
-export TRANSLATION_BASE_URL=your_api_base_url
+# 1. 克隆仓库
+git clone https://github.com/foreveryh/translator-mcp-server
+cd translator-mcp-server
 
-# 启动服务
+# 2. 创建 .env 文件
+cp .env.example .env
+# 编辑 .env 填入您的 API 密钥
+
+# 3. 构建镜像
+docker build -t translator-mcp-server .
+
+# 4. 运行容器
+docker run -p 3031:3031 --env-file .env -d translator-mcp-server
+```
+
+### Docker Compose 部署（推荐）
+
+使用 Docker Compose 更方便地管理服务：
+
+```bash
+# 1. 创建 .env 文件
+cp .env.example .env
+
+# 2. 编辑 .env 文件，配置必需的环境变量：
+# TRANSLATION_API_KEY=your_api_key
+# TRANSLATION_MODEL=your_model_name
+# TRANSLATION_BASE_URL=your_api_base_url
+
+# 3. 启动服务
 docker-compose up -d
+
+# 4. 查看日志
+docker-compose logs -f
+
+# 5. 停止服务
+docker-compose down
 ```
 
-### 服务器配置示例
+### 本地 Docker 容器配置（Claude Desktop / Cursor）
 
-您也可以使用类似以下的配置方式来定义和启动MCP服务器：
+如果您希望在 Claude Desktop 或 Cursor 中使用本地构建的 Docker 容器，可以这样配置：
 
 ```json
 {
   "mcpServers": {
-    "airylark-translation": {
+    "translator": {
       "command": "docker",
       "args": [
         "run",
@@ -228,19 +226,19 @@ docker-compose up -d
         "TRANSLATION_MODEL",
         "-e",
         "TRANSLATION_BASE_URL",
-        "wizdy/airylark-mcp-server"
+        "translator-mcp-server"
       ],
       "env": {
-        "TRANSLATION_API_KEY": "<YOUR_API_KEY>",
-        "TRANSLATION_MODEL": "<YOUR_MODEL>",
-        "TRANSLATION_BASE_URL": "<YOUR_API_URL>"
+        "TRANSLATION_API_KEY": "your_api_key",
+        "TRANSLATION_MODEL": "anthropic/claude-3.5-sonnet",
+        "TRANSLATION_BASE_URL": "https://openrouter.ai/api/v1"
       }
     }
   }
 }
 ```
 
-这种配置方式适用于需要在应用内直接管理MCP服务器生命周期的场景。
+**注意：** 使用此配置前需要先构建本地镜像：`docker build -t translator-mcp-server .`
 
 ## 许可证
 
