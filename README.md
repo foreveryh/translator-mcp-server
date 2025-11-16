@@ -70,7 +70,7 @@ translator-mcp
       "args": ["-y", "translator-mcp-server"],
       "env": {
         "TRANSLATION_API_KEY": "your-api-key",
-        "TRANSLATION_MODEL": "glm-4-air",
+        "TRANSLATION_MODEL": "glm-4.5-air",
         "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4"
       }
     }
@@ -104,7 +104,7 @@ npm start
 ```bash
 # 翻译 API 配置（必需）
 TRANSLATION_API_KEY=your_api_key          # API 密钥
-TRANSLATION_MODEL=glm-4-air               # 模型名称
+TRANSLATION_MODEL=glm-4.5-air             # 模型名称
 TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4  # API 端点
 
 # 服务器配置（可选）
@@ -117,15 +117,23 @@ PORT=3031             # 服务器端口
 #### 智谱 AI（推荐）
 ```bash
 TRANSLATION_API_KEY=your-zhipu-key
-TRANSLATION_MODEL=glm-4-air
+TRANSLATION_MODEL=glm-4.5-air
 TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4
 ```
 
 **智谱 AI 模型选择：**
-- `glm-4-air`：性价比最高，速度快，适合大多数场景（推荐）
-- `glm-4-plus`：质量最高，理解能力强，适合专业翻译
-- `glm-4-flash`：速度最快，成本最低，适合大量文本
-- `glm-4-0520`：稳定版本，适合生产环境
+
+**GLM-4.6 系列**（最新，2025年9月发布）
+- `glm-4.6`：旗舰模型，200K超长上下文，推理能力最强
+- `glm-4.6-air`：轻量版，性能优于 4.5，Token 使用效率提升 15%
+
+**GLM-4.5 系列**（2025年7月发布）
+- `glm-4.5`：开源旗舰，3550亿参数，SOTA 级性能
+- `glm-4.5-air`：性价比最高，速度快，适合大多数场景 ✅ **推荐**
+
+**定价参考：**
+- GLM-4.5-Air：输入 0.8元/百万tokens，输出 2元/百万tokens
+- 支持思考模式（Thinking Mode）和常规模式
 
 #### OpenRouter
 ```bash
@@ -238,7 +246,7 @@ console.log(result.content[0].text);
       "args": ["-y", "translator-mcp-server"],
       "env": {
         "TRANSLATION_API_KEY": "your-key",
-        "TRANSLATION_MODEL": "glm-4-air",
+        "TRANSLATION_MODEL": "glm-4.5-air",
         "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4",
         "MODE": "stdio"
       }
@@ -263,7 +271,7 @@ console.log(result.content[0].text);
       "args": ["-y", "translator-mcp-server"],
       "env": {
         "TRANSLATION_API_KEY": "your-key",
-        "TRANSLATION_MODEL": "glm-4-air",
+        "TRANSLATION_MODEL": "glm-4.5-air",
         "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4"
       }
     }
@@ -311,7 +319,7 @@ docker build -t translator-mcp-server .
 docker run -d \
   -p 3031:3031 \
   -e TRANSLATION_API_KEY=your-key \
-  -e TRANSLATION_MODEL=glm-4-air \
+  -e TRANSLATION_MODEL=glm-4.5-air \
   -e TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4 \
   -e MODE=sse \
   --name translator-mcp \
@@ -396,8 +404,8 @@ console.log(result.content[0].text);
 
 1. **使用简单模式**：设置 `high_quality: false`
 2. **选择更快的模型**：
-   - `glm-4-flash`：速度最快
-   - `glm-4-air`：平衡速度和质量（推荐）
+   - `glm-4.6-air`：最新轻量版，Token 效率提升 15%（推荐）
+   - `glm-4.5-air`：平衡速度和质量，性价比高
 3. **检查网络延迟**：测试到 API 端点的连接速度
 
 ## 贡献
