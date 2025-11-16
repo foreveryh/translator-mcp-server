@@ -1,8 +1,11 @@
-# AiryLark MCP 专业翻译服务器
+# Translator MCP Server
 
-[![License: Custom](https://img.shields.io/badge/License-Custom%20(Apache%202.0%20with%20restrictions)-blue.svg)](../LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/translator-mcp-server.svg)](https://www.npmjs.com/package/translator-mcp-server)
 
-这是AiryLark项目的ModelContextProtocol(MCP)服务器模块，提供专业级高精度翻译服务接口。MCP是一种标准协议，允许智能助手与外部服务进行结构化交互，使复杂翻译能力可直接被Claude等大型AI模型调用。
+专业翻译 MCP 服务器，基于三阶段翻译流程（分析规划、分段翻译、全文审校），提供高精度翻译服务。MCP（Model Context Protocol）是一种标准协议，允许 AI 助手（如 Claude）与外部服务进行结构化交互。
+
+**🌐 在线服务地址：** `https://t.deeptoai.com/sse`
 
 ## 专业翻译优势
 
@@ -20,48 +23,130 @@
 - **医疗资料翻译**：专业医学术语翻译和医疗文献本地化
 - **金融报告翻译**：准确翻译金融术语和复杂财务概念
 
-## 安装
+## 快速开始
 
-1. 确保已安装Node.js (v18+)和npm
+### 方式 1：使用在线服务（推荐）
 
-2. 安装依赖:
+直接使用已部署的在线服务，无需安装：
+
+**Claude Desktop 配置：**
+
+macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "translator": {
+      "url": "https://t.deeptoai.com/sse",
+      "transport": "sse"
+    }
+  }
+}
+```
+
+配置完成后，重启 Claude Desktop 即可使用翻译功能。
+
+### 方式 2：本地运行
+
+#### 通过 npm（推荐）
 
 ```bash
-cd mcp-server
+# 使用 npx 直接运行
+npx translator-mcp-server
+
+# 或全局安装
+npm install -g translator-mcp-server
+translator-mcp
+```
+
+**Claude Desktop 本地配置：**
+
+```json
+{
+  "mcpServers": {
+    "translator": {
+      "command": "npx",
+      "args": ["-y", "translator-mcp-server"],
+      "env": {
+        "TRANSLATION_API_KEY": "your-api-key",
+        "TRANSLATION_MODEL": "glm-4.5-air",
+        "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4"
+      }
+    }
+  }
+}
+```
+
+#### 从源码运行
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/foreveryh/translator-mcp-server
+cd translator-mcp-server
+
+# 2. 安装依赖
 npm install
-```
 
-3. 配置环境变量:
+# 3. 配置环境变量
+cp .env.example .env
+# 编辑 .env 填入您的 API 配置
 
-创建`.env`文件或设置以下环境变量:
-
-```
-# 翻译API配置
-TRANSLATION_API_KEY=your_api_key
-TRANSLATION_MODEL=your_model_name
-TRANSLATION_BASE_URL=your_api_base_url
-
-# 服务器配置
-PORT=3031  # MCP服务器端口，可选，默认3031
-```
-
-## 使用方法
-
-### 开发环境
-
-启动开发服务器:
-
-```bash
-npm run dev
-```
-
-### 生产环境
-
-构建并启动服务器:
-
-```bash
+# 4. 构建并运行
 npm run build
 npm start
+```
+
+## 环境变量配置
+
+创建 `.env` 文件或设置以下环境变量：
+
+```bash
+# 翻译 API 配置（必需）
+TRANSLATION_API_KEY=your_api_key          # API 密钥
+TRANSLATION_MODEL=glm-4.5-air             # 模型名称
+TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4  # API 端点
+
+# 服务器配置（可选）
+MODE=sse              # 运行模式：stdio, sse, rest
+PORT=3031             # 服务器端口
+```
+
+### 支持的 AI 服务商
+
+#### 智谱 AI（推荐）
+```bash
+TRANSLATION_API_KEY=your-zhipu-key
+TRANSLATION_MODEL=glm-4.5-air
+TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+```
+
+**智谱 AI 模型选择：**
+
+**GLM-4.6 系列**（最新，2025年9月发布）
+- `glm-4.6`：旗舰模型，200K超长上下文，推理能力最强
+- `glm-4.6-air`：轻量版，性能优于 4.5，Token 使用效率提升 15%
+
+**GLM-4.5 系列**（2025年7月发布）
+- `glm-4.5`：开源旗舰，3550亿参数，SOTA 级性能
+- `glm-4.5-air`：性价比最高，速度快，适合大多数场景 ✅ **推荐**
+
+**定价参考：**
+- GLM-4.5-Air：输入 0.8元/百万tokens，输出 2元/百万tokens
+- 支持思考模式（Thinking Mode）和常规模式
+
+#### OpenRouter
+```bash
+TRANSLATION_API_KEY=sk-or-v1-xxxxx
+TRANSLATION_MODEL=anthropic/claude-3.5-sonnet
+TRANSLATION_BASE_URL=https://openrouter.ai/api/v1
+```
+
+#### OpenAI
+```bash
+TRANSLATION_API_KEY=sk-proj-xxxxx
+TRANSLATION_MODEL=gpt-4-turbo
+TRANSLATION_BASE_URL=https://api.openai.com/v1
 ```
 
 ## MCP工具接口
@@ -111,7 +196,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 
 // 连接到MCP服务器
-const transport = new SSEClientTransport("http://localhost:3031");
+const transport = new SSEClientTransport("https://t.deeptoai.com/sse");
 const client = new Client(
   { name: "assistant-client", version: "1.0.0" },
   { capabilities: { tools: {} } }
@@ -131,117 +216,206 @@ const result = await client.callTool({
 console.log(result.content[0].text);
 ```
 
-## Claude Chat与Cursor等MCP客户端配置
+## MCP 客户端配置
 
-在支持MCP协议的AI助手应用中，可通过以下方式配置与AiryLark翻译服务器的连接：
+### Claude Desktop（推荐）
 
-### Cursor配置
+配置文件位置：
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
-在Cursor设置或配置文件中添加以下MCP服务器配置：
-
+**使用在线服务：**
 ```json
 {
   "mcpServers": {
-    "airylark-translation": {
-      "url": "https://airylark-mcp.vcorp.ai/sse"
+    "translator": {
+      "url": "https://t.deeptoai.com/sse",
+      "transport": "sse"
     }
   }
 }
 ```
 
-### Claude Chat配置
-
-在Claude Chat中，可以通过以下步骤开启MCP服务器连接：
-
-1. 进入设置页面
-2. 找到"开发者设置"或"外部工具"选项
-3. 添加新的MCP服务器，填写名称与URL
-4. 服务器URL填写 `https://airylark-mcp.vcorp.ai/sse`
-
-配置完成后，AI助手便可以使用"translate_text"和"evaluate_translation"工具，轻松处理各类专业文档翻译需求。
-
-## 服务器配置与运行
-
-AiryLark MCP服务器支持多种部署和运行方式，以下是常用配置方法：
-
-### Docker部署
-
-使用官方发布的Docker镜像是最简单的部署方式：
-
-```bash
-# 拉取官方镜像
-docker pull wizdy/airylark-mcp-server
-
-# 运行容器
-docker run -p 3031:3031 --env-file .env -d wizdy/airylark-mcp-server
-```
-
-### Docker Compose部署
-
-使用项目提供的docker-compose.yml文件，配合官方镜像可以更方便地管理服务：
-
-```yaml
-# docker-compose.yml 示例
-services:
-  mcp-server:
-    image: wizdy/airylark-mcp-server
-    ports:
-      - "${MCP_PORT}:${MCP_PORT}"
-    environment:
-      - NODE_ENV=production
-      - PORT=${MCP_PORT}
-      - TRANSLATION_API_KEY=${TRANSLATION_API_KEY}
-      - TRANSLATION_MODEL=${TRANSLATION_MODEL}
-      - TRANSLATION_BASE_URL=${TRANSLATION_BASE_URL}
-    restart: always
-```
-
-运行服务：
-
-```bash
-# 设置环境变量或创建.env文件
-export MCP_PORT=3031
-export TRANSLATION_API_KEY=your_api_key
-export TRANSLATION_MODEL=your_model_name
-export TRANSLATION_BASE_URL=your_api_base_url
-
-# 启动服务
-docker-compose up -d
-```
-
-### 服务器配置示例
-
-您也可以使用类似以下的配置方式来定义和启动MCP服务器：
-
+**使用本地服务（stdio 模式）：**
 ```json
 {
   "mcpServers": {
-    "airylark-translation": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "TRANSLATION_API_KEY",
-        "-e",
-        "TRANSLATION_MODEL",
-        "-e",
-        "TRANSLATION_BASE_URL",
-        "wizdy/airylark-mcp-server"
-      ],
+    "translator": {
+      "command": "npx",
+      "args": ["-y", "translator-mcp-server"],
       "env": {
-        "TRANSLATION_API_KEY": "<YOUR_API_KEY>",
-        "TRANSLATION_MODEL": "<YOUR_MODEL>",
-        "TRANSLATION_BASE_URL": "<YOUR_API_URL>"
+        "TRANSLATION_API_KEY": "your-key",
+        "TRANSLATION_MODEL": "glm-4.5-air",
+        "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4",
+        "MODE": "stdio"
       }
     }
   }
 }
 ```
 
-这种配置方式适用于需要在应用内直接管理MCP服务器生命周期的场景。
+配置完成后，重启 Claude Desktop，即可使用 `translate_text` 和 `evaluate_translation` 工具。
+
+### Claude Code（Cline）
+
+**注意：** Claude Code 仅支持 stdio 模式，不支持远程 SSE 连接。
+
+配置文件：工作区根目录 `.claude/mcp.json` 或全局 `~/.config/cline/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "translator": {
+      "command": "npx",
+      "args": ["-y", "translator-mcp-server"],
+      "env": {
+        "TRANSLATION_API_KEY": "your-key",
+        "TRANSLATION_MODEL": "glm-4.5-air",
+        "TRANSLATION_BASE_URL": "https://open.bigmodel.cn/api/paas/v4"
+      }
+    }
+  }
+}
+```
+
+### Cursor / 其他 MCP 客户端
+
+参考 Claude Desktop 的 SSE 配置方式，URL 设置为 `https://t.deeptoai.com/sse`。
+
+## Docker 部署
+
+### Docker Compose 部署（推荐）
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/foreveryh/translator-mcp-server
+cd translator-mcp-server
+
+# 2. 创建并配置 .env 文件
+cp .env.example .env
+# 编辑 .env 填入您的 API 配置
+
+# 3. 启动服务
+docker-compose up -d
+
+# 4. 查看日志
+docker-compose logs -f
+
+# 5. 测试健康检查
+curl http://localhost:3031/health
+
+# 6. 停止服务
+docker-compose down
+```
+
+### 单独使用 Docker
+
+```bash
+# 构建镜像
+docker build -t translator-mcp-server .
+
+# 运行容器
+docker run -d \
+  -p 3031:3031 \
+  -e TRANSLATION_API_KEY=your-key \
+  -e TRANSLATION_MODEL=glm-4.5-air \
+  -e TRANSLATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4 \
+  -e MODE=sse \
+  --name translator-mcp \
+  translator-mcp-server
+
+# 查看日志
+docker logs -f translator-mcp
+```
+
+## 使用示例
+
+### 在 Claude Desktop 中使用
+
+配置完成后，您可以直接在对话中使用翻译功能：
+
+```
+请翻译这段文本到中文：
+"The mitochondrion is the powerhouse of the cell."
+```
+
+或者评估翻译质量：
+
+```
+请评估这个翻译的质量：
+原文：Hello, world!
+译文：你好，世界！
+```
+
+### 通过 API 调用
+
+```typescript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
+
+// 连接到在线服务
+const transport = new SSEClientTransport("https://t.deeptoai.com/sse");
+const client = new Client(
+  { name: "my-app", version: "1.0.0" },
+  { capabilities: { tools: {} } }
+);
+await client.connect(transport);
+
+// 翻译文本
+const result = await client.callTool({
+  name: "translate_text",
+  arguments: {
+    text: "Hello, how are you?",
+    target_language: "zh",
+    high_quality: true
+  }
+});
+
+console.log(result.content[0].text);
+// 输出：你好，你好吗？
+```
+
+## 故障排查
+
+### Claude Desktop 无法连接
+
+1. **检查配置文件格式**
+   - 确保 JSON 格式正确（无多余逗号、引号匹配）
+   - 使用 JSON 验证器检查
+
+2. **重启 Claude Desktop**
+   - 完全退出（Cmd+Q / Alt+F4）
+   - 重新打开应用
+
+3. **检查在线服务**
+   ```bash
+   curl https://t.deeptoai.com/health
+   # 应返回: {"status":"healthy","version":"0.1.0"}
+   ```
+
+4. **查看日志**
+   - macOS: `~/Library/Logs/Claude/`
+   - Windows: `%APPDATA%\Claude\logs\`
+
+### 翻译速度较慢
+
+三阶段翻译流程需要 3 次 API 调用，适合专业文档翻译。如需快速翻译：
+
+1. **使用简单模式**：设置 `high_quality: false`
+2. **选择更快的模型**：
+   - `glm-4.6-air`：最新轻量版，Token 效率提升 15%（推荐）
+   - `glm-4.5-air`：平衡速度和质量，性价比高
+3. **检查网络延迟**：测试到 API 端点的连接速度
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
 
 ## 许可证
 
-本项目使用与AiryLark主项目相同的定制许可证，详见[LICENSE](LICENSE)文件。
+Apache-2.0 License - 详见 [LICENSE](LICENSE) 文件。
+
+## 致谢
+
+基于 [Model Context Protocol](https://modelcontextprotocol.io/) 构建。

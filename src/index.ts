@@ -213,17 +213,17 @@ async function translateTextHighQuality(
   const segments = segmentText(text);
   console.log(`文本已分为${segments.length}个段落`);
   
-  const translatedSegments = [];
-  for (let i = 0; i < segments.length; i++) {
-    console.log(`翻译段落 ${i+1}/${segments.length}`);
-    const translatedSegment = await translateSegment(
-      segments[i], 
-      translationPlan, 
-      target_language, 
-      source_language
-    );
-    translatedSegments.push(translatedSegment);
-  }
+  // 并发翻译所有段落（使用 Promise.all 保证返回顺序）
+  console.log(`开始并发翻译 ${segments.length} 个段落`);
+  const translatedSegments = await Promise.all(
+    segments.map((segment, index) =>
+      translateSegment(segment, translationPlan, target_language, source_language)
+        .then(result => {
+          console.log(`段落 ${index + 1}/${segments.length} 翻译完成`);
+          return result;
+        })
+    )
+  );
   
   // 合并翻译结果
   const combinedTranslation = translatedSegments.join('\n\n');

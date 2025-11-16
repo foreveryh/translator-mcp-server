@@ -1,21 +1,35 @@
 {
-  "name": "airylark-mcp-server",
+  "name": "translator-mcp-server",
   "version": "0.1.0",
   "main": "dist/index.js",
-  "description": "AiryLark的ModelContextProtocol(MCP)服务器，提供高精度翻译API",
-  "license": "SEE LICENSE IN ../LICENSE",
-  "author": "AiryLark Team",
+  "bin": {
+    "translator-mcp": "dist/index.js"
+  },
+  "description": "Professional translation MCP server with three-stage workflow, supporting multiple languages and AI providers",
+  "license": "Apache-2.0",
+  "author": "foreveryh",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wizd/airylark.git",
-    "directory": "mcp-server"
+    "url": "https://github.com/foreveryh/translator-mcp-server.git"
   },
   "keywords": [
     "mcp",
+    "model-context-protocol",
     "translation",
+    "translator",
     "openai",
-    "api",
-    "airylark"
+    "openrouter",
+    "zhipu",
+    "claude",
+    "ai",
+    "i18n",
+    "localization"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    ".env.example"
   ],
   "scripts": {
     "build": "tsc",
@@ -24,7 +38,8 @@
     "lint": "eslint src/**/*.ts",
     "test": "jest",
     "clean": "rimraf dist",
-    "prebuild": "npm run clean"
+    "prebuild": "npm run clean",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@chatmcp/sdk": "^1.0.5",
