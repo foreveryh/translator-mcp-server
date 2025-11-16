@@ -6,9 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: translator-mcp-server:latest
-    container_name: translator-mcp
     ports:
-      - "${PORT:-3031}:3031"
+      - "${HOST_PORT:-3031}:3031"
     environment:
       - NODE_ENV=production
       - PORT=3031
@@ -26,35 +25,9 @@ services:
       retries: 3
       start_period: 10s
 
-    # 资源限制
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 128M
-
-    # 安全配置
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
-    tmpfs:
-      - /tmp
-
     # 日志配置
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-
-    # 网络模式（可选：如果需要网络隔离）
-    # networks:
-    #   - translator-network
-
-# 可选：创建自定义网络
-# networks:
-#   translator-network:
-#     driver: bridge
