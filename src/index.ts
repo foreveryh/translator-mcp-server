@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -198,27 +199,21 @@ async function translateTextSimple(
 
 // 高精度翻译方法（三阶段流程）
 async function translateTextHighQuality(
-  text: string,
-  target_language: string,
+  text: string, 
+  target_language: string, 
   source_language?: string
 ): Promise<string> {
   console.log(`开始高精度翻译流程，文本长度: ${text.length}字符`);
-
-  // 智能优化：对于短文本（< 100 字符），直接使用简单模式
-  if (text.length < 100) {
-    console.log(`文本较短（${text.length}字符），使用快速翻译模式`);
-    return translateTextSimple(text, target_language, source_language);
-  }
-
+  
   // 阶段1：创建翻译规划
   const translationPlan = await createTranslationPlan(text, target_language, source_language);
   console.log(`阶段1完成：创建翻译规划，内容类型: ${translationPlan.contentType}`);
-
+  
   // 阶段2：分段翻译
   // 将长文本分段，便于更精确的翻译
   const segments = segmentText(text);
   console.log(`文本已分为${segments.length}个段落`);
-
+  
   // 并发翻译所有段落（使用 Promise.all 保证返回顺序）
   console.log(`开始并发翻译 ${segments.length} 个段落`);
   const translatedSegments = await Promise.all(
@@ -230,29 +225,19 @@ async function translateTextHighQuality(
         })
     )
   );
-
+  
   // 合并翻译结果
   const combinedTranslation = translatedSegments.join('\n\n');
   console.log(`阶段2完成：所有段落翻译完成`);
-
-  // 智能优化：对于简单内容类型，跳过审校阶段
-  const skipReview = ['日常对话', '简单对话', '问候', '日常交流'].some(
-    type => translationPlan.contentType.includes(type)
-  ) || text.length < 200;
-
-  if (skipReview) {
-    console.log(`内容类型"${translationPlan.contentType}"或文本较短，跳过审校阶段`);
-    return combinedTranslation;
-  }
-
-  // 阶段3：审校翻译（仅用于复杂或长文本）
+  
+  // 阶段3：审校翻译
   const finalTranslation = await reviewTranslation(
-    combinedTranslation,
-    translationPlan,
+    combinedTranslation, 
+    translationPlan, 
     target_language
   );
   console.log(`阶段3完成：翻译审校完成`);
-
+  
   return finalTranslation;
 }
 
